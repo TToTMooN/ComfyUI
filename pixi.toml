@@ -7,19 +7,16 @@ platforms = ["linux-64"]
 cuda = "13.0"
 libc = "2.31"
 
+[environments]
+default = { solve-group = "default" }
+novaflow = { features = ["novaflow"], solve-group = "default" }
+
 [tasks]
 start = "python main.py --listen 0.0.0.0 --use-sage-attention"
-# Consolidated setup for NovaFlow custom nodes
-setup-novaflow = { cmd = [
-    "pip install -e custom_nodes/novaflow-v2/sam3",
-    "&&",
-    "pip install -e custom_nodes/novaflow-v2/Depth-Anything-3",
-    "&&",
-    "cd custom_nodes/novaflow-v2/TAPIP3D/third_party/pointops2 && export CUDA_HOME=$CONDA_PREFIX && python setup.py install"
-] }
 
 [dependencies]
 python = "3.12.*"
+pip = "*"
 numpy = "<2.0.0"
 pillow = "*"
 scipy = "*"
@@ -28,13 +25,10 @@ psutil = "*"
 pyyaml = "*"
 alembic = "*"
 sqlalchemy = "*"
-ninja = "*"
-cmake = "*"
-gxx_linux-64 = "*"
 
 [pypi-options]
 index-strategy = "unsafe-best-match"
-no-build-isolation = ["torch", "torchvision", "torchaudio"]
+no-build-isolation = ["torch", "torchvision", "torchaudio", "xformers", "sageattention"]
 extra-index-urls = ["https://download.pytorch.org/whl/nightly/cu130"]
 
 [pypi-dependencies]
@@ -60,8 +54,24 @@ kornia = ">=0.7.1"
 spandrel = "*"
 pydantic = "~=2.0"
 pydantic-settings = "~=2.0"
+sageattention = "*"
 
-# NovaFlow / TAPIP3D / HunyuanWM
+# --- Features ---
+
+[feature.novaflow.tasks]
+setup_sam3 = "pip install -e custom_nodes/novaflow-v2/sam3 --no-deps"
+setup_da3 = "export TORCH_CUDA_ARCH_LIST='12.0' && pip uninstall -y xformers && pip install xformers --no-deps --no-build-isolation --no-binary xformers && pip install -e custom_nodes/novaflow-v2/Depth-Anything-3 --no-deps"
+setup_tapi3d = "cd custom_nodes/novaflow-v2/TAPIP3D/third_party/pointops2 && export CUDA_HOME=$CONDA_PREFIX && python setup.py install"
+build = {depends-on = ["setup_sam3", "setup_da3", "setup_tapi3d"]}
+clean = "rm -rf custom_nodes/novaflow-v2/**/build custom_nodes/novaflow-v2/**/*.egg-info"
+
+[feature.novaflow.dependencies]
+cuda-toolkit = "==13.0"
+ninja = "*"
+cmake = "*"
+gxx_linux-64 = "*"
+
+[feature.novaflow.pypi-dependencies]
 open3d = "==0.19.0"
 pycolmap = "==3.10.0"
 lightning = ">=2.5.0"
@@ -91,4 +101,12 @@ colorspacious = "*"
 moviepy = "==1.0.3"
 plyfile = "*"
 tyro = "*"
-# gsplat = { url = "https://docs.gsplat.studio/whl/pt24cu124/gsplat-1.4.0-cp312-cp312-linux_x86_64.whl" } # Placeholder if cu130 whl isn't out yet
+omegaconf = "*"
+fastapi = "*"
+uvicorn = "*"
+pre-commit = "*"
+tensorboardX = "*"
+rootutils = "*"
+pytest = "*"
+e3nn = "*"
+evo = "*"
