@@ -59,7 +59,7 @@ sageattention = "*"
 # --- Features ---
 
 [feature.novaflow.tasks]
-setup_sam3 = "pip install -e custom_nodes/novaflow-v2/sam3 --no-deps"
+setup_sam3 = "pip install -e 'custom_nodes/novaflow-v2/sam3[notebooks]' --no-deps"
 setup_da3 = "export TORCH_CUDA_ARCH_LIST='12.0' && pip uninstall -y xformers && pip install xformers --no-deps --no-build-isolation --no-binary xformers && pip install -e custom_nodes/novaflow-v2/Depth-Anything-3 --no-deps"
 setup_tapi3d = "cd custom_nodes/novaflow-v2/TAPIP3D/third_party/pointops2 && export CUDA_HOME=$CONDA_PREFIX && python setup.py install"
 build = {depends-on = ["setup_sam3", "setup_da3", "setup_tapi3d"]}
@@ -110,3 +110,13 @@ rootutils = "*"
 pytest = "*"
 e3nn = "*"
 evo = "*"
+# SAM3 Notebooks & Extras
+decord = "*"
+scikit-image = "*"
+pycocotools = "*"
+ftfy = "==6.1.1"
+regex = "*"
+iopath = ">=0.1.10"
+ipywidgets = "*"
+ipycanvas = "*"
+ipympl = "*"
