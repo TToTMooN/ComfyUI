@@ -1,0 +1,94 @@
+[workspace]
+name = "ComfyUI"
+channels = ["nvidia", "conda-forge", "pytorch"]
+platforms = ["linux-64"]
+
+[system-requirements]
+cuda = "13.0"
+libc = "2.31"
+
+[tasks]
+start = "python main.py --listen 0.0.0.0 --use-sage-attention"
+# Consolidated setup for NovaFlow custom nodes
+setup-novaflow = { cmd = [
+    "pip install -e custom_nodes/novaflow-v2/sam3",
+    "&&",
+    "pip install -e custom_nodes/novaflow-v2/Depth-Anything-3",
+    "&&",
+    "cd custom_nodes/novaflow-v2/TAPIP3D/third_party/pointops2 && export CUDA_HOME=$CONDA_PREFIX && python setup.py install"
+] }
+
+[dependencies]
+python = "3.12.*"
+numpy = "<2.0.0"
+pillow = "*"
+scipy = "*"
+tqdm = "*"
+psutil = "*"
+pyyaml = "*"
+alembic = "*"
+sqlalchemy = "*"
+ninja = "*"
+cmake = "*"
+gxx_linux-64 = "*"
+
+[pypi-options]
+index-strategy = "unsafe-best-match"
+no-build-isolation = ["torch", "torchvision", "torchaudio"]
+extra-index-urls = ["https://download.pytorch.org/whl/nightly/cu130"]
+
+[pypi-dependencies]
+# PyTorch Nightly for Blackwell (cu130)
+torch = { version = ">=2.7.0.dev" }
+torchvision = { version = ">=0.22.0.dev" }
+torchaudio = { version = ">=2.7.0.dev" }
+
+# ComfyUI base
+comfyui-frontend-package = "==1.35.9"
+comfyui-workflow-templates = "==0.7.65"
+comfyui-embedded-docs = "==0.3.1"
+torchsde = "*"
+einops = "*"
+transformers = ">=4.50.3"
+tokenizers = ">=0.13.3"
+sentencepiece = "*"
+safetensors = ">=0.4.2"
+aiohttp = ">=3.11.8"
+yarl = ">=1.18.0"
+av = ">=14.2.0"
+kornia = ">=0.7.1"
+spandrel = "*"
+pydantic = "~=2.0"
+pydantic-settings = "~=2.0"
+
+# NovaFlow / TAPIP3D / HunyuanWM
+open3d = "==0.19.0"
+pycolmap = "==3.10.0"
+lightning = ">=2.5.0"
+typed-argument-parser = "*"
+hydra-core = "*"
+rich = "*"
+h5py = "*"
+sophuspy = "*"
+opencv-python = "*"
+rerun-sdk = "~=0.21"
+matplotlib = "*"
+imageio = "*"
+trimesh = "*"
+huggingface-hub = { version = ">=0.22", extras = ["torch"] }
+python-box = { version = "~=7.0", extras = ["all"] }
+timm = "*"
+wandb = "*"
+lightning-utilities = "*"
+torchmetrics = "*"
+roma = "*"
+gradio = "*"
+viser = "*"
+pillow-heif = "*"
+jaxtyping = "*"
+lpips = "*"
+colorspacious = "*"
+moviepy = "==1.0.3"
+plyfile = "*"
+tyro = "*"
+# gsplat = { url = "https://docs.gsplat.studio/whl/pt24cu124/gsplat-1.4.0-cp312-cp312-linux_x86_64.whl" } # Placeholder if cu130 whl isn't out yet
